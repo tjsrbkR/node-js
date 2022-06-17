@@ -9,9 +9,16 @@ var app = http.createServer(function(request,response){
     let title = queryData.id;
     if(pathname === '/'){
         if(title === undefined){
+            fs.readdir('./data',function(err,filelist){
                 let name = "Welcome !";
                 let description = "Hello! Node.js!"
-                let template = `
+            let list = `<ul>`;
+            for(let i=0; i<filelist.length;i++){
+                list = list + `<li><a href="/?id=${filelist[i]}">${filelist[i]}</a></li>`;
+            }
+            
+            list = list + `</ul>`;
+            let template = `
                     <!doctype html>
                     <html>
                         <head>
@@ -20,11 +27,7 @@ var app = http.createServer(function(request,response){
                         </head>
                         <body>
                         <h1><a href="/">WEB</a></h1>
-                        <ul>
-                            <li><a href="/?id=HTML">HTML</a></li>
-                            <li><a href="/?id=CSS">CSS</a></li>
-                            <li><a href="/?id=JavaScript">JavaScript</a></li>
-                        </ul>
+                        ${list}
                         <h2>${name}</h2>
                         <p>
                             ${description}
@@ -34,32 +37,46 @@ var app = http.createServer(function(request,response){
                 `;
                 response.writeHead(200);
                 response.end(template);
+            })
+
+
+
+
+
         }
         else{
-            fs.readFile(`data/${title}`,'utf-8', function(err, description){
-                let template = `
-                    <!doctype html>
-                    <html>
-                        <head>
-                        <title>WEB1 - ${title}</title>
-                        <meta charset="utf-8">
-                        </head>
-                        <body>
-                        <h1><a href="/">WEB</a></h1>
-                        <ul>
-                            <li><a href="/?id=HTML">HTML</a></li>
-                            <li><a href="/?id=CSS">CSS</a></li>
-                            <li><a href="/?id=JavaScript">JavaScript</a></li>
-                        </ul>
-                        <h2>${title}</h2>
-                        <p>
-                            ${description}
-                        </p>
-                        </body>
-                    </html>
-                `;
-                response.writeHead(200);
-                response.end(template);
+            fs.readdir('./data',function(err,filelist){
+                let name = "Welcome !";
+                let description = "Hello! Node.js!"
+            let list = `<ul>`;
+            for(let i=0; i<filelist.length;i++){
+                list = list + `<li><a href="/?id=${filelist[i]}">${filelist[i]}</a></li>`;
+            }
+            
+            list = list + `</ul>`;
+
+
+                fs.readFile(`data/${title}`,'utf-8', function(err, description){
+                    let template = `
+                        <!doctype html>
+                        <html>
+                            <head>
+                            <title>WEB1 - ${title}</title>
+                            <meta charset="utf-8">
+                            </head>
+                            <body>
+                            <h1><a href="/">WEB</a></h1>
+                            ${list}
+                            <h2>${title}</h2>
+                            <p>
+                                ${description}
+                            </p>
+                            </body>
+                        </html>
+                    `;
+                    response.writeHead(200);
+                    response.end(template);
+                });
             });
         }
     } else{
